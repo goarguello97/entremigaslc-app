@@ -1,0 +1,145 @@
+@import 'tailwindcss';
+
+/*
+  Sistema visual Entre Migas (tomado de sus posteos de Instagram).
+  Formas: botones, pills y steppers = redondo total. Contenedores (cards, hero,
+  sheet) = 24px (rounded-3xl). Tiles internos, inputs y opciones = 16px (rounded-2xl).
+  Acento único: terracota. El mostaza es superficie de marca, nunca botón.
+*/
+
+:root {
+  color-scheme: light;
+  --paper: #fbf3e8;
+  --paper-2: #f5e8d6;
+  --surface: #fffbf5;
+  --ink: #3a1f12;
+  --ink-soft: #6e5241;
+  --line: #ead9c2;
+  --accent: #b04a2f;
+  --accent-ink: #fff8ef;
+  --accent-soft: #f2d3c4;
+  --mustard: #f1c23e;
+  --on-mustard: #3a1f12;
+  --danger: #b3261e;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --paper: #1f140e;
+    --paper-2: #27190f;
+    --surface: #2b1d14;
+    --ink: #f7efe6;
+    --ink-soft: #cdb8a5;
+    --line: #432e20;
+    --accent: #e07a57;
+    --accent-ink: #1f140e;
+    --accent-soft: #4b2a1d;
+    --mustard: #f1c23e;
+    --on-mustard: #3a1f12;
+    --danger: #ff8a80;
+  }
+}
+
+@theme inline {
+  --font-sans: 'Outfit Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-hand: 'Caveat Brush', 'Outfit Variable', cursive;
+
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-mustard: var(--mustard);
+  --color-on-mustard: var(--on-mustard);
+  --color-danger: var(--danger);
+  /* Terracota original de la marca: solo para ilustración y wordmark. */
+  --color-brand-clay: #c5583b;
+}
+
+@theme {
+  --animate-sheet-up: sheet-up 340ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-sheet-left: sheet-left 340ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-fade-in: fade-in 220ms ease-out;
+  --animate-pop: pop 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  @keyframes sheet-up {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  @keyframes sheet-left {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes pop {
+    0% { transform: scale(0.5); }
+    100% { transform: scale(1); }
+  }
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-paper font-sans text-ink antialiased;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-accent;
+  }
+}
+
+/* Movimiento: todo detrás de no-preference; con reduce la página queda estática. */
+@media (prefers-reduced-motion: no-preference) {
+  /* Entrada del hero, en secuencia (--i = orden). */
+  .rise {
+    animation: rise 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i, 0) * 90ms);
+  }
+
+  /* Saludo de la mascota al cargar: tres veces y se queda quieta. */
+  .wave-arm {
+    transform-box: view-box;
+    transform-origin: 148px 80px;
+    animation: wave 900ms ease-in-out 600ms 3;
+  }
+
+  /* Las cards del menú aparecen al entrar en pantalla (solo navegadores con scroll timelines). */
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 30%;
+    }
+  }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes wave {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(-16deg); }
+  65% { transform: rotate(10deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}

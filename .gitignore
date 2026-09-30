@@ -1,0 +1,8 @@
+node_modules
+dist
+.env
+.env.local
+*.log
+
+# Configuración local del editor/asistente (contiene rutas de esta máquina)
+.claude/

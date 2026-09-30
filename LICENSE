@@ -1,0 +1,44 @@
+Copyright (c) 2026 Gonzalo Argüello (https://github.com/goarguello97)
+Todos los derechos reservados.
+
+1. CÓDIGO FUENTE
+
+El código fuente, la arquitectura y la documentación técnica de este
+repositorio son obra de Gonzalo Argüello y de su exclusiva propiedad.
+
+No se concede ninguna licencia para usar, copiar, modificar, fusionar,
+publicar, distribuir, sublicenciar ni vender el software, total o
+parcialmente, sin autorización previa y por escrito del autor. Que el
+repositorio sea visible públicamente no otorga ninguno de esos derechos,
+salvo los mínimos que establezcan los Términos de Servicio de GitHub para
+ver el contenido dentro de la plataforma.
+
+2. MARCA E IDENTIDAD DE ENTRE MIGAS
+
+El nombre "Entre Migas", su logo, su mascota, su identidad visual (paleta de
+colores y estilo de ilustración), los textos propios de la marca y los
+contenidos del negocio (menú, precios, frases y presentación de sus dueños)
+pertenecen a sus respectivos titulares. Estos elementos no forman parte de
+los derechos del punto 1 y este documento no los cede ni los licencia.
+
+El uso del software por parte de Entre Migas se rige por lo que acuerden
+directamente el autor y los titulares del negocio.
+
+3. COMPONENTES DE TERCEROS
+
+Este proyecto utiliza dependencias de código abierto que se rigen por sus
+propias licencias, entre ellas: React, React DOM, Vite y Tailwind CSS
+(licencia MIT), Lucide (licencia ISC) y las tipografías Outfit y Caveat Brush
+distribuidas mediante Fontsource (SIL Open Font License 1.1). Nada de lo
+dispuesto en este documento modifica esas licencias.
+
+4. AUSENCIA DE GARANTÍA
+
+El software se entrega "tal cual", sin garantías de ningún tipo, expresas o
+implícitas. En ningún caso el autor será responsable por daños derivados del
+uso del software.
+
+5. CONTACTO
+
+Para solicitar autorizaciones o consultas sobre esta licencia, contactar al
+autor a través de https://github.com/goarguello97.
