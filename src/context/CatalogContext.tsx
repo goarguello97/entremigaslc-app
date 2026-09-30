@@ -7,7 +7,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { DEFAULT_SETTINGS, SHEET_MENU_URL } from '../config';
+import { DEFAULT_SETTINGS, SHEET_MENU_URL, USE_LOCAL_MENU } from '../config';
 import { LOCAL_PRODUCTS } from '../data/products';
 import { fetchCatalog } from '../data/sheet';
 import type { Catalog, Product, Settings } from '../types';
@@ -45,13 +45,15 @@ function writeCache(catalog: Catalog) {
 }
 
 function initialState(): CatalogState {
-  if (!SHEET_MENU_URL) {
+  if (USE_LOCAL_MENU) {
     return {
       status: 'ready',
       catalog: { products: LOCAL_PRODUCTS, settings: DEFAULT_SETTINGS },
       fresh: true,
     };
   }
+  // Producción sin link configurado: se muestra el error en lugar de un menú inventado.
+  if (!SHEET_MENU_URL) return { status: 'error', catalog: null, fresh: false };
   // Si hay una copia de la visita anterior, se muestra al instante y se actualiza en segundo plano.
   const cached = readCache();
   return cached

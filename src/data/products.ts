@@ -20,8 +20,8 @@ const CHEESE = '#F1C23E';
 const CHICKEN = '#E3C08F';
 const VERDEO = '#8E9458';
 
-// Menú local de respaldo: solo se usa si VITE_SHEET_MENU_URL se define vacío
-// (por ejemplo, para desarrollar sin conexión). El menú real vive en la planilla.
+// Menú local de respaldo: solo se usa en desarrollo cuando falta VITE_SHEET_MENU_URL.
+// El menú real vive en la planilla.
 export const LOCAL_PRODUCTS: Product[] = [
   {
     id: 'mortadela-queso',

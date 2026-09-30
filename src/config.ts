@@ -1,14 +1,23 @@
 import type { Settings } from './types';
 
-// Planilla de Google publicada como CSV (Archivo > Compartir > Publicar en la Web).
-// Son links públicos de solo lectura; se pueden reemplazar con variables de entorno.
-const SHEET_BASE =
-  'https://docs.google.com/spreadsheets/d/e/2PACX-1vTu1uJPno7EI-iHJy74Y702vi_GYWXmur5HpsXxxZSUdwd_IeIxpqTLUoKDK-XXCg0byJP3rCbb0eYn/pub';
+// Pestañas de la planilla de Google publicadas como CSV (Archivo > Compartir > Publicar en la Web).
+// Se definen en .env (local) o en las variables de entorno del hosting.
+export const SHEET_MENU_URL = import.meta.env.VITE_SHEET_MENU_URL?.trim() ?? '';
+export const SHEET_CONFIG_URL = import.meta.env.VITE_SHEET_CONFIG_URL?.trim() ?? '';
 
-export const SHEET_MENU_URL =
-  import.meta.env.VITE_SHEET_MENU_URL ?? `${SHEET_BASE}?gid=0&single=true&output=csv`;
-export const SHEET_CONFIG_URL =
-  import.meta.env.VITE_SHEET_CONFIG_URL ?? `${SHEET_BASE}?gid=729520028&single=true&output=csv`;
+/**
+ * Sin link del menú: en desarrollo se usa el menú local de src/data/products.ts;
+ * en producción se muestra el estado de error para que la falta de configuración no pase inadvertida.
+ */
+export const USE_LOCAL_MENU = !SHEET_MENU_URL && import.meta.env.DEV;
+
+if (!SHEET_MENU_URL) {
+  console.warn(
+    import.meta.env.DEV
+      ? '[menú] Falta VITE_SHEET_MENU_URL: se usa el menú local de src/data/products.ts.'
+      : '[menú] Falta VITE_SHEET_MENU_URL en las variables de entorno del build.',
+  );
+}
 
 /** Valores por defecto: se usan si la pestaña Config no carga o le falta algún dato. */
 export const DEFAULT_SETTINGS: Settings = {

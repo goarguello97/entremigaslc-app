@@ -90,6 +90,7 @@ No hay librerías de animación: todo el movimiento está hecho con CSS.
 git clone <url-del-repositorio>
 cd <carpeta-del-repositorio>
 npm install
+cp .env.example .env   # y pegar los links CSV de la planilla
 npm run dev
 ```
 
@@ -163,14 +164,16 @@ Si falta un valor o no es válido (por ejemplo, un WhatsApp con pocos dígitos),
 
 ## Variables de entorno
 
-Son todas opcionales: la app ya trae los links de la planilla y valores por defecto en [`src/config.ts`](src/config.ts). Para sobrescribirlos, crear un `.env` en la raíz a partir de `.env.example`.
+Los links de la planilla no están en el código: se configuran como variables de entorno. En local, crear un `.env` en la raíz a partir de `.env.example` (el `.env` no se sube al repositorio). En el hosting, cargarlas en su panel de variables de entorno.
 
-| Variable | Descripción |
-| --- | --- |
-| `VITE_SHEET_MENU_URL` | Link CSV de la pestaña `Menu`. Si se define vacío, se usa el menú local de [`src/data/products.ts`](src/data/products.ts) (útil para desarrollar sin conexión). |
-| `VITE_SHEET_CONFIG_URL` | Link CSV de la pestaña `Config`. |
-| `VITE_WHATSAPP_NUMBER` | Número de respaldo si `Config` no carga. Solo dígitos, formato internacional. |
-| `VITE_STORE_NAME` | Nombre de respaldo del local. |
+| Variable | Obligatoria | Descripción |
+| --- | --- | --- |
+| `VITE_SHEET_MENU_URL` | Sí, en producción | Link CSV de la pestaña `Menu`. Si falta, en desarrollo se usa el menú local de [`src/data/products.ts`](src/data/products.ts) y en producción se muestra el mensaje de error del menú. |
+| `VITE_SHEET_CONFIG_URL` | Recomendada | Link CSV de la pestaña `Config`. Si falta, se usan los valores por defecto de [`src/config.ts`](src/config.ts). |
+| `VITE_WHATSAPP_NUMBER` | No | Número de respaldo si `Config` no carga. Solo dígitos, formato internacional. |
+| `VITE_STORE_NAME` | No | Nombre de respaldo del local. |
+
+Para obtener los links: en la planilla, **Archivo → Compartir → Publicar en la Web**, elegir la pestaña y **Valores separados por comas (.csv)**, y copiar el link que genera.
 
 > Las variables `VITE_*` se incrustan en el JavaScript final durante el build, así que son públicas. No guardes secretos en ellas.
 
@@ -309,8 +312,8 @@ La identidad visual está tomada de los posteos de la marca en Instagram ([@entr
 
 `npm run build` genera una carpeta `dist/` con archivos estáticos que se pueden publicar en cualquier hosting.
 
-- **Vercel o Netlify:** importar el repositorio. Comando de build: `npm run build`. Carpeta de salida: `dist`. No hace falta configurar variables: los links de la planilla ya están en el código.
-- **GitHub Pages:** si el sitio se sirve desde `https://<usuario>.github.io/<repositorio>/`, agregar `base: '/<repositorio>/'` en [`vite.config.ts`](vite.config.ts) antes de construir.
+- **Vercel o Netlify:** importar el repositorio. Comando de build: `npm run build`. Carpeta de salida: `dist`. En **Settings → Environment Variables** cargar `VITE_SHEET_MENU_URL` y `VITE_SHEET_CONFIG_URL` (entorno *Production*, y también *Preview* si se usan deploys de prueba). Como se leen durante el build, después de agregarlas o cambiarlas hay que volver a desplegar (**Deployments → ⋯ → Redeploy**).
+- **GitHub Pages:** si el sitio se sirve desde `https://<usuario>.github.io/<repositorio>/`, agregar `base: '/<repositorio>/'` en [`vite.config.ts`](vite.config.ts) antes de construir, y definir las variables de entorno en el workflow (por ejemplo, como *variables* del repositorio).
 
 ## Limitaciones y próximos pasos
 
