@@ -45,6 +45,7 @@ export function parseMenu(csv: string): Product[] {
     half: col('precio_media'),
     available: col('disponible'),
     category: col('categoria'),
+    image: col('imagen'),
   };
   const cell = (row: string[], i: number) => (i >= 0 ? (row[i] ?? '').trim() : '');
 
@@ -77,6 +78,7 @@ export function parseMenu(csv: string): Product[] {
       priceDozen,
       priceHalfDozen,
       layers: fillingColors(name, description),
+      image: cell(row, idx.image),
     });
   }
 

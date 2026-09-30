@@ -1,27 +1,33 @@
 import { Info, RotateCw } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useCatalog } from '../context/CatalogContext';
+import { resolveImage } from '../data/images';
 import { CATEGORIES } from '../data/products';
 import type { Category } from '../types';
 import { ProductCard } from './ProductCard';
 
-// Si queda una card sola en la última fila, ocupa todo el ancho.
-const GRID = 'mt-6 grid gap-3 md:grid-cols-2 lg:gap-4 md:[&>*:last-child:nth-child(odd)]:col-span-2';
+// 1 columna en celular, 2 en tablet y 3 en escritorio. En tablet, si queda una card sola
+// en la última fila, ocupa todo el ancho con la foto más apaisada.
+const GRID = [
+  'mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4',
+  'sm:max-lg:[&>*:last-child:nth-child(odd)]:col-span-2',
+  'sm:max-lg:[&>*:last-child:nth-child(odd)_.card-media]:aspect-[21/9]',
+].join(' ');
 
 /** Placeholder con la misma forma que ProductCard mientras llega la planilla. */
 function ProductCardSkeleton() {
   return (
     <div
       aria-hidden="true"
-      className="grid animate-pulse grid-cols-[84px_1fr] gap-x-4 gap-y-4 rounded-3xl bg-surface p-3 ring-1 ring-line sm:grid-cols-[112px_1fr] sm:p-4"
+      className="flex animate-pulse flex-col rounded-3xl bg-surface p-3 ring-1 ring-line"
     >
-      <div className="aspect-square rounded-2xl bg-paper-2" />
-      <div className="flex flex-col justify-center gap-2">
+      <div className="card-media aspect-[16/10] w-full rounded-2xl bg-paper-2" />
+      <div className="flex flex-col gap-2 px-1 pt-4">
         <div className="h-5 w-2/3 rounded-full bg-paper-2" />
         <div className="h-3.5 w-full rounded-full bg-paper-2" />
         <div className="h-3.5 w-1/2 rounded-full bg-paper-2" />
+        <div className="mt-3 h-12 rounded-full bg-paper-2" />
       </div>
-      <div className="col-span-2 h-12 rounded-full bg-paper-2" />
     </div>
   );
 }
@@ -57,6 +63,8 @@ export function ProductList() {
     [products],
   );
   const showFilters = products.length > 6 && usedCategories.length > 2;
+  // El aviso de imágenes ilustrativas solo tiene sentido si alguna variedad muestra foto.
+  const hasPhotos = products.some((p) => resolveImage(p.id, p.image));
   const visible =
     !showFilters || category === 'todos'
       ? products
@@ -137,11 +145,18 @@ export function ProductList() {
       )}
 
       {status === 'ready' && products.length > 0 && (
-        <div className={GRID}>
-          {visible.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        <>
+          <div className={GRID}>
+            {visible.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+          {hasPhotos && (
+            <p className="mt-4 text-xs text-ink-soft">
+              Las imágenes son ilustrativas. El producto puede variar en su presentación.
+            </p>
+          )}
+        </>
       )}
     </section>
   );

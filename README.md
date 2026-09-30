@@ -28,7 +28,7 @@ No tiene backend: el menú, los precios y los datos del local se leen de una **p
 
 ## Características
 
-- **Catálogo** de variedades con nombre, descripción, precio por docena y por media docena, e ilustración propia de cada sándwich.
+- **Catálogo** de variedades con foto, nombre, descripción y precio por docena y por media docena. Las variedades sin foto muestran una ilustración propia, y cuando hay fotos se aclara que son imágenes ilustrativas.
 - **Selector de cantidad** en pasos de media docena (½, 1, 1½, 2 docenas...) antes de agregar al pedido.
 - **Carrito** como panel inferior en celular y lateral en escritorio: permite cambiar cantidades, eliminar variedades y ver el total calculado al instante.
 - **Barra flotante** en celular con la cantidad de variedades y el total, para abrir el pedido desde cualquier parte de la página.
@@ -111,16 +111,33 @@ El menú y los datos del local se cargan desde una planilla de Google publicada 
 
 Una fila por variedad. Los encabezados de la fila 1 tienen que ser exactamente estos (se toleran mayúsculas y tildes):
 
-| nombre | descripcion | precio_docena | precio_media | disponible | categoria |
-| --- | --- | --- | --- | --- | --- |
-| Mortadela y Queso | Mortadela, queso y mayonesa en pan de miga triple. | 20000 | 11000 | SI | clasicos |
+| nombre | descripcion | precio_docena | precio_media | disponible | categoria | imagen |
+| --- | --- | --- | --- | --- | --- | --- |
+| Mortadela y Queso | Mortadela, queso y mayonesa en pan de miga triple. | 20000 | 11000 | SI | clasicos | *(opcional)* |
 
 - **`nombre` y `precio_docena`** son obligatorios; las filas sin ellos se ignoran.
 - **Precios:** se aceptan `20000`, `20.000` o `$20.000`. Si `precio_media` está vacío, se usa la mitad de la docena.
 - **`disponible`:** con `NO` la variedad se oculta. Vacío o `SI` la muestra.
 - **`categoria`:** `clasicos`, `especiales` o `veggie`. Define el color de fondo de la ilustración; cualquier otro valor cuenta como `clasicos`.
 - **Orden:** el de las filas.
-- **Ilustración:** los colores de los rellenos se eligen solos según los ingredientes que aparecen en el nombre o la descripción (mortadela, jamón, pollo, verdeo, tomate, huevo, etc.). La lista está en [`src/data/fillings.ts`](src/data/fillings.ts).
+- **`imagen`** (opcional): foto de la variedad. Ver [Fotos de las variedades](#fotos-de-las-variedades).
+- **Ilustración:** cuando una variedad no tiene foto, se muestra un dibujo. Los colores de los rellenos se eligen solos según los ingredientes que aparecen en el nombre o la descripción (mortadela, jamón, pollo, verdeo, tomate, huevo, etc.). La lista está en [`src/data/fillings.ts`](src/data/fillings.ts).
+
+### Fotos de las variedades
+
+Cada variedad puede tener foto. Se busca en este orden:
+
+1. **Link en la columna `imagen`.** La forma recomendada para el negocio es Google Drive:
+   1. Subir la foto a Google Drive.
+   2. Clic derecho en la foto → **Compartir** → en *Acceso general* elegir **Cualquier persona con el enlace** (Lector).
+   3. **Copiar enlace** y pegarlo en la columna `imagen` de la variedad.
+
+   La app convierte el link de Drive en una imagen directa. También se acepta cualquier link público que termine en una imagen (`https://...jpg`).
+2. **Nombre de archivo en la columna `imagen`** (por ejemplo `jamon.jpg`): se busca en [`src/assets/productos/`](src/assets/productos/).
+3. **Columna vacía:** se busca en `src/assets/productos/` un archivo con el id de la variedad, que es el nombre en minúsculas, sin tildes y con guiones (`Jamón y Queso` → `jamon-y-queso.jpg`).
+4. **Sin foto o si no carga** (por ejemplo, un link de Drive que no es público): se muestra la ilustración.
+
+Las fotos no se pueden pegar dentro de la celda (**Insertar → Imagen**): la planilla publicada como CSV solo exporta texto. Formato recomendado: horizontal, alrededor de 1200 px de ancho y menos de 300 KB.
 
 ### Pestaña `Config`
 
@@ -171,7 +188,7 @@ Las cantidades se guardan en medias docenas. El subtotal es `docenas completas �
 
 - **Portada:** [`src/components/Hero.tsx`](src/components/Hero.tsx).
 - **Sección "Quiénes somos":** [`src/components/About.tsx`](src/components/About.tsx).
-- **Bajada del menú ("Todos llevan mayonesa...")**: [`src/components/ProductList.tsx`](src/components/ProductList.tsx).
+- **Bajada del menú ("Todos llevan mayonesa...") y aviso de imágenes ilustrativas:** [`src/components/ProductList.tsx`](src/components/ProductList.tsx).
 - **Formato del mensaje de WhatsApp:** [`src/utils/whatsapp.ts`](src/utils/whatsapp.ts).
 
 ## Estructura del proyecto
@@ -191,14 +208,18 @@ Las cantidades se guardan en medias docenas. El subtotal es `docenas completas �
 │   │   ├── Navbar.tsx           # Logo y acceso al pedido con contador
 │   │   ├── ProductCard.tsx      # Ficha de una variedad con selector de cantidad
 │   │   ├── ProductList.tsx      # Menú, aviso, filtros y estados de carga/error
+│   │   ├── ProductMedia.tsx     # Foto de la variedad o ilustración de respaldo
 │   │   ├── QuantityStepper.tsx  # Control de cantidad en medias docenas
 │   │   ├── SandwichArt.tsx      # Ilustración SVG del sándwich (mascota)
 │   │   └── Wordmark.tsx         # Logo "entre migas" en texto
+│   ├── assets/
+│   │   └── productos/           # Fotos incluidas (una por variedad)
 │   ├── context/
 │   │   ├── CartContext.tsx      # Estado global del carrito
 │   │   └── CatalogContext.tsx   # Menú y datos del local (planilla + caché)
 │   ├── data/
 │   │   ├── fillings.ts          # Colores de relleno según ingredientes
+│   │   ├── images.ts            # Resolución de fotos (Drive, links, archivos)
 │   │   ├── products.ts          # Categorías, colores y menú local de respaldo
 │   │   └── sheet.ts             # Lectura y validación de la planilla
 │   ├── utils/
@@ -298,7 +319,8 @@ La identidad visual está tomada de los posteos de la marca en Instagram ([@entr
 - **Depende de Google:** si Google Sheets no responde, los clientes nuevos ven el mensaje de error; los que ya visitaron la web ven la última versión guardada.
 - **Costo de envío:** no se calcula; se coordina por WhatsApp.
 - **Stock y horarios:** no se controlan desde la app; por eso el aviso de disponibilidad.
-- **Imágenes:** las ilustraciones son SVG hechos a mano; el logo se escribe con una tipografía similar a la original. Cuando haya fotos reales de los productos y los archivos oficiales de la marca, conviene incorporarlos.
+- **Fotos de Google Drive:** se sirven desde las miniaturas de Drive, que no es un servicio pensado para esto; si alguna vez deja de funcionar, la variedad muestra la ilustración. Para máxima confiabilidad, incluir las fotos en `src/assets/productos/`.
+- **Logo:** se escribe con una tipografía similar a la original. Conviene reemplazarlo por el archivo oficial de la marca.
 - **Ideas a futuro:** elegir fecha y horario de entrega, abrir y cerrar la toma de pedidos desde la planilla, y medir cuántos pedidos se inician y se envían.
 
 ## Licencia

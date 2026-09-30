@@ -9,6 +9,8 @@ export interface Product {
   priceHalfDozen: number;
   /** Colores de los dos rellenos, usados para la ilustración. */
   layers: [string, string];
+  /** Valor de la columna `imagen` de la planilla (link o nombre de archivo). */
+  image?: string;
 }
 
 export interface CartLine {

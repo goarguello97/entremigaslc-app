@@ -2,9 +2,9 @@ import { MessageCircle, Trash2, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { MAX_HALF_DOZENS } from '../config';
 import { useCart } from '../context/CartContext';
-import { CATEGORY_TINT } from '../data/products';
 import { formatPrice, formatQuantityShort, sandwichCount } from '../utils/format';
 import { CHECKOUT_FORM_ID, CheckoutForm } from './CheckoutForm';
+import { ProductMedia } from './ProductMedia';
 import { QuantityStepper } from './QuantityStepper';
 import { SandwichArt } from './SandwichArt';
 
@@ -127,12 +127,11 @@ export function Cart() {
               <ul className="flex flex-col gap-2">
                 {lines.map(({ product, halfDozens, subtotal }) => (
                   <li key={product.id} className="flex gap-3 rounded-2xl bg-surface p-3 ring-1 ring-line">
-                    <div
-                      className="grid size-14 shrink-0 place-items-center rounded-xl"
-                      style={{ backgroundColor: CATEGORY_TINT[product.category] }}
-                    >
-                      <SandwichArt layers={product.layers} className="w-12" />
-                    </div>
+                    <ProductMedia
+                      product={product}
+                      className="size-14 shrink-0 overflow-hidden rounded-xl"
+                      artClassName="w-12"
+                    />
                     <div className="flex min-w-0 flex-1 flex-col gap-2">
                       <div className="flex items-start justify-between gap-2">
                         <p className="leading-tight font-semibold">{product.name}</p>

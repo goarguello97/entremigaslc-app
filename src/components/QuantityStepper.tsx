@@ -27,7 +27,7 @@ export function QuantityStepper({
 
   return (
     <div
-      className={`flex items-center gap-1 rounded-full bg-surface p-1 ring-1 ring-line ${className}`}
+      className={`flex items-center gap-0.5 rounded-full bg-surface p-1 ring-1 ring-line ${className}`}
     >
       <button
         type="button"
@@ -40,7 +40,7 @@ export function QuantityStepper({
       </button>
       <output
         aria-live="polite"
-        className={`min-w-0 flex-1 text-center font-semibold whitespace-nowrap tabular-nums ${
+        className={`min-w-0 flex-1 text-center font-semibold tracking-tight whitespace-nowrap tabular-nums ${
           size === 'md' ? 'text-[15px]' : 'text-sm'
         }`}
       >
