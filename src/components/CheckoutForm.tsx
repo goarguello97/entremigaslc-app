@@ -1,7 +1,7 @@
 import { Banknote, Landmark, Store, Truck, type LucideIcon } from 'lucide-react';
 import { useEffect, useState, type FormEvent } from 'react';
-import { WHATSAPP_NUMBER } from '../config';
 import { useCart } from '../context/CartContext';
+import { useCatalog } from '../context/CatalogContext';
 import type { CustomerInfo, DeliveryMethod, PaymentMethod } from '../types';
 import { buildOrderUrl } from '../utils/whatsapp';
 
@@ -88,6 +88,7 @@ interface CheckoutFormProps {
 
 export function CheckoutForm({ onSubmitted }: CheckoutFormProps) {
   const { lines, total } = useCart();
+  const { settings } = useCatalog();
   const [customer, setCustomer] = useState<CustomerInfo>(loadCustomer);
   const [errors, setErrors] = useState<Errors>({});
   const [touched, setTouched] = useState(false);
@@ -119,7 +120,7 @@ export function CheckoutForm({ onSubmitted }: CheckoutFormProps) {
       firstInvalid?.focus();
       return;
     }
-    const url = buildOrderUrl(WHATSAPP_NUMBER, lines, customer, total);
+    const url = buildOrderUrl(settings.whatsapp, lines, customer, total);
     window.open(url, '_blank', 'noopener,noreferrer');
     onSubmitted(url);
   };

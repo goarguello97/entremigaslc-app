@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from 'react';
 import { MAX_HALF_DOZENS } from '../config';
-import { PRODUCTS_BY_ID } from '../data/products';
+import { useCatalog } from './CatalogContext';
 import type { CartLine } from '../types';
 import { linePrice } from '../utils/format';
 
@@ -20,7 +20,8 @@ type CartAction =
   | { type: 'add'; id: string; halfDozens: number }
   | { type: 'set'; id: string; halfDozens: number }
   | { type: 'remove'; id: string }
-  | { type: 'clear' };
+  | { type: 'clear' }
+  | { type: 'prune'; validIds: Set<string> };
 
 const STORAGE_KEY = 'miga-cart-v1';
 
@@ -39,6 +40,12 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     }
     case 'clear':
       return {};
+    case 'prune': {
+      const next = Object.fromEntries(
+        Object.entries(state).filter(([id]) => action.validIds.has(id)),
+      );
+      return Object.keys(next).length === Object.keys(state).length ? state : next;
+    }
   }
 }
 
@@ -49,8 +56,8 @@ function loadCart(): CartState {
     const parsed = JSON.parse(raw) as Record<string, unknown>;
     const state: CartState = {};
     for (const [id, qty] of Object.entries(parsed)) {
-      // Descarta productos que ya no existen o cantidades corruptas.
-      if (PRODUCTS_BY_ID[id] && typeof qty === 'number' && qty > 0) state[id] = clamp(qty);
+      // Descarta cantidades corruptas. Los productos inexistentes se limpian al cargar el menú.
+      if (typeof qty === 'number' && qty > 0) state[id] = clamp(qty);
     }
     return state;
   } catch {
@@ -78,6 +85,13 @@ const CartContext = createContext<CartContextValue | null>(null);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(cartReducer, undefined, loadCart);
   const [isOpen, setIsOpen] = useState(false);
+  const { productsById, fresh } = useCatalog();
+
+  // Con el menú recién leído de la planilla, se quitan del carrito las variedades
+  // que ya no están (borradas o marcadas como no disponibles).
+  useEffect(() => {
+    if (fresh) dispatch({ type: 'prune', validIds: new Set(Object.keys(productsById)) });
+  }, [fresh, productsById]);
 
   useEffect(() => {
     try {
@@ -89,11 +103,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const lines = useMemo<CartLine[]>(
     () =>
-      Object.entries(state).map(([id, halfDozens]) => {
-        const product = PRODUCTS_BY_ID[id];
-        return { product, halfDozens, subtotal: linePrice(product, halfDozens) };
+      Object.entries(state).flatMap(([id, halfDozens]) => {
+        const product = productsById[id];
+        return product ? [{ product, halfDozens, subtotal: linePrice(product, halfDozens) }] : [];
       }),
-    [state],
+    [state, productsById],
   );
 
   const total = useMemo(() => lines.reduce((sum, l) => sum + l.subtotal, 0), [lines]);

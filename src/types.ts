@@ -18,6 +18,20 @@ export interface CartLine {
   subtotal: number;
 }
 
+/** Datos del local que el negocio edita desde la pestaña Config de la planilla. */
+export interface Settings {
+  whatsapp: string;
+  storeName: string;
+  instagram: string;
+  location: string;
+  notice: string;
+}
+
+export interface Catalog {
+  products: Product[];
+  settings: Settings;
+}
+
 export type DeliveryMethod = 'envio' | 'retiro';
 export type PaymentMethod = 'efectivo' | 'transferencia';
 

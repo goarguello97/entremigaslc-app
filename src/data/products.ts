@@ -20,8 +20,9 @@ const CHEESE = '#F1C23E';
 const CHICKEN = '#E3C08F';
 const VERDEO = '#8E9458';
 
-// Menú de prueba. Precios de ejemplo: reemplazar por los reales.
-export const PRODUCTS: Product[] = [
+// Menú local de respaldo: solo se usa si VITE_SHEET_MENU_URL se define vacío
+// (por ejemplo, para desarrollar sin conexión). El menú real vive en la planilla.
+export const LOCAL_PRODUCTS: Product[] = [
   {
     id: 'mortadela-queso',
     name: 'Mortadela y Queso',
@@ -50,7 +51,3 @@ export const PRODUCTS: Product[] = [
     layers: [CHICKEN, VERDEO],
   },
 ];
-
-export const PRODUCTS_BY_ID: Record<string, Product> = Object.fromEntries(
-  PRODUCTS.map((p) => [p.id, p]),
-);
