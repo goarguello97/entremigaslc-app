@@ -29,5 +29,11 @@ export const DEFAULT_SETTINGS: Settings = {
     'Los pedidos quedan sujetos a disponibilidad. Te confirmamos por WhatsApp antes de prepararlo.',
 };
 
+// Crédito de diseño y desarrollo en el pie de página.
+export const AUTHOR = {
+  name: 'Gonzalo Argüello',
+  url: 'https://www.linkedin.com/in/gonzalo-arg%C3%BCello/',
+};
+
 // Máximo de medias docenas por variedad (20 docenas).
 export const MAX_HALF_DOZENS = 40;

@@ -1,4 +1,5 @@
 import { ArrowUpRight, MapPin } from 'lucide-react';
+import { AUTHOR } from '../config';
 import { useCatalog } from '../context/CatalogContext';
 import { Wordmark } from './Wordmark';
 
@@ -28,6 +29,23 @@ export function Footer() {
             </a>
           )}
         </div>
+      </div>
+
+      {/* Crédito del autor. pb extra en mobile para que no lo tape la barra flotante del pedido. */}
+      <div className="mx-auto max-w-6xl px-4 pb-24 sm:px-6 md:pb-8">
+        <p className="border-t border-line pt-5 text-xs text-ink-soft">
+          Diseño y desarrollo:{' '}
+          <a
+            href={AUTHOR.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-0.5 font-semibold text-ink underline-offset-4 hover:underline"
+          >
+            {AUTHOR.name}
+            <ArrowUpRight size={14} strokeWidth={2} aria-hidden="true" />
+            <span className="sr-only">(LinkedIn, se abre en una pestaña nueva)</span>
+          </a>
+        </p>
       </div>
     </footer>
   );
